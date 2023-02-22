@@ -1,11 +1,40 @@
 <script setup lang="ts">
-import { onMounted, inject } from 'vue';
+import { onMounted, inject, ref } from 'vue';
+import {
+    ElRow,
+    ElCol,
+    ElInput,
+    ElRadioGroup,
+    ElRadioButton,
+} from 'element-plus';
+import { CreditCard } from '@element-plus/icons-vue';
 
 const echarts = inject<any>('echarts');
 
+const city_1 = ref<string>('Beijing');
+const city_2 = ref<string>('Shanghai');
+const city_3 = ref<string>('Hangzhou');
+
+const timeRadio = ref<string | number>('Last day');
+
+const timeItems = ref<(string | number)[]>([
+    'Last day',
+    'Last week',
+    'Last month',
+    'Last year',
+]);
+
+const chartTypeRadio = ref<string | number>('Line');
+
+const chartTypeItems = ref<(string | number)[]>([
+    'Line',
+    'Pie',
+    'Last month',
+    'Last year',
+]);
+
 onMounted(() => {
     change();
-    getData();
 });
 
 const change = () => {
@@ -66,19 +95,94 @@ const change = () => {
         chartBox.resize();
     });
 };
-const getData = async () => {
-    // const res = await fetchData();
-    // console.log('res', res);
+
+const onTimeChange = async (currentSlot: string | number | boolean) => {
+    // one bug here, the @change function's parameter type is different from ElCheckboxGroup
+    // v-model value's type, so we need to add type assert here.
+    timeRadio.value = currentSlot as string | number;
+};
+
+const onchartTypeChange = async (currentChartType: string | number | boolean) => {
+    // one bug here, the @change function's parameter type is different from ElCheckboxGroup
+    // v-model value's type, so we need to add type assert here.
+    chartTypeRadio.value = currentChartType as string | number;
 };
 </script>
 
 <template>
-    <div id="main"></div>
+    <div class="urban-comparison">
+        <!-- city list -->
+        <el-row :gutter="20">
+            <el-col :span="3">
+                <el-input
+                    v-model="city_1"
+                    placeholder="Pick a city"
+                    :suffix-icon="CreditCard"
+                />
+            </el-col>
+            <el-col :span="3">
+                <el-input
+                    v-model="city_2"
+                    placeholder="Pick a city"
+                    :suffix-icon="CreditCard"
+                />
+            </el-col>
+            <el-col :span="3">
+                <el-input
+                    v-model="city_3"
+                    placeholder="Pick a city"
+                    :suffix-icon="CreditCard"
+                />
+            </el-col>
+        </el-row>
+
+        <!-- timeslot radio -->
+        <el-row>
+            <el-radio-group v-model="timeRadio" @change="onTimeChange">
+                <el-radio-button
+                    v-for="item in timeItems"
+                    :key="item"
+                    :label="item"
+                >
+                    {{ item }}
+                </el-radio-button>
+            </el-radio-group>
+        </el-row>
+
+        <!-- chart type radio -->
+        <el-row>
+            <el-radio-group v-model="chartTypeRadio" @change="onchartTypeChange">
+                <el-radio-button
+                    v-for="item in chartTypeItems"
+                    :key="item"
+                    :label="item"
+                >
+                    {{ item }}
+                </el-radio-button>
+            </el-radio-group>
+        </el-row>
+
+        <!-- chart -->
+        <div id="main"></div>
+    </div>
 </template>
 
 <style scoped>
+.urban-comparison {
+    display: flex;
+    flex-direction: column;
+    height: 80%;
+}
+.el-row {
+    margin: 10px 20px !important;
+}
+.el-col {
+    padding-left: 0 !important;
+}
 #main {
-    min-width: 31.25rem;
-    min-height: 31.25rem;
+    flex: 1;
+    box-sizing: border-box;
+    padding: 20px;
+    width: 100%;
 }
 </style>

@@ -2,7 +2,7 @@
 import RequestInstance from '@/api/request';
 
 const requestInstance = new RequestInstance({
-    baseURL: 'http://localhost:5000/',
+    baseURL: 'http://localhost:8000/',
     timeout: 3000,
     interceptorHooks: {
         requestInterceptor: (config) => {

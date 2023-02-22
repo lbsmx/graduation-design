@@ -10,7 +10,7 @@ export const useProAqiStore = defineStore('proAqi', () => {
         try {
             const res: ProvinceAqiInfo = await requestInstance.request({
                 method: 'GET',
-                url: '/',
+                url: '/mytest',
             });
             proAqiInfo.data = res;
         } catch (error) {
