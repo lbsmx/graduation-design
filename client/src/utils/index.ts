@@ -1,6 +1,6 @@
 // router manager
 import { MYGITHUB, DISTRIBUTIONMAP, URBANCOMPARISON } from '@/constants';
-import { AqiRange, Color, type Aqi } from '@/types';
+import { AqiRange, Color, type Aqi, type DateStr } from '@/types';
 import type { Router } from 'vue-router';
 export const routerManager = (router: Router, keyPath: string[]) => {
     switch (keyPath[0]) {
@@ -112,4 +112,30 @@ const getLimitColorByRange = (range: AqiRange) => {
                 aqi: [0, 0],
             };
     }
+};
+
+export const getDateRange = (start: DateStr, end: DateStr) => {
+    const startTime = getDate(start);
+    const endTime = getDate(end);
+    const dateList: DateStr[] = [];
+    while (endTime.getTime() - startTime.getTime() >= 0) {
+        const year = startTime.getFullYear();
+        const month =
+            startTime.getMonth().toString().length == 1
+                ? '0' + startTime.getMonth().toString()
+                : startTime.getMonth();
+        const day =
+            startTime.getDate().toString().length == 1
+                ? '0' + startTime.getDate()
+                : startTime.getDate();
+        dateList.push(year + '-' + month + '-' + day);
+        startTime.setDate(startTime.getDate() + 1);
+    }
+    return dateList;
+};
+
+const getDate = (datestr: DateStr): Date => {
+    const temp = datestr.split('-');
+    const date = new Date(Number(temp[0]), Number(temp[1]), Number(temp[2]));
+    return date;
 };

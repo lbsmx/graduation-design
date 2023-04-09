@@ -13,9 +13,14 @@ const router: Router = createRouter({
                     component: () => import('@/views/DistributionMap.vue'),
                 },
                 {
-                    name: 'urban-comparison',
-                    path: '/urban-comparison',
-                    component: () => import('@/views/UrbanComparison.vue'),
+                    name: 'history-data',
+                    path: '/history-data',
+                    component: () => import('@/views/HistoryData.vue'),
+                },
+                {
+                    name: 'influencing-factors',
+                    path: '/influencing-factorsa',
+                    component: () => import('@/views/InfluencingFactors.vue'),
                 },
             ],
         },

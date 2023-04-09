@@ -1,15 +1,29 @@
 export type ProvinceName = string;
 
+export type CityName = string;
+
 export type Aqi = number;
 
 export type Rank = number | null;
 
-export type AqiInfo = {
-    aqi: Aqi;
-    rank: Rank;
+export type AirData = string[];
+
+export type Field = string;
+export type Value = string;
+
+export type DateStr = string;
+
+export type Collection = Record<Field, Value>;
+
+export type CityData = {
+    cityName: CityName;
+    data: Collection[];
 };
 
-export type ProvinceAqiInfo = Record<string, AqiInfo>;
+export type CityAlias = {
+    zh: CityName;
+    value: CityName;
+};
 
 export enum AqiRange {
     Excellent,

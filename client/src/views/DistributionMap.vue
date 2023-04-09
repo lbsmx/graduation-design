@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { CHINA } from '@/constants/map';
 import { tooltipComp } from '@/echarts/map/utils';
-import { useProAqiStore } from '@/stores';
-import { Color, type ProvinceAqiInfo, type ProvinceName } from '@/types';
+import { Color, type ProvinceName } from '@/types';
 import { generateColor } from '@/utils';
 import type { EChartsType } from 'echarts/core';
 import type { EChartsOption } from 'echarts/types/dist/shared';
@@ -10,10 +9,7 @@ import { onMounted, inject, ref, reactive } from 'vue';
 
 const echarts = inject<any>('echarts');
 
-const proAqiStore = useProAqiStore();
-
 const chinaMap = ref<EChartsType | null>(null);
-const provinceAqi = ref<ProvinceAqiInfo | null>(null);
 
 const options = reactive<EChartsOption>({
     title: {
@@ -106,51 +102,47 @@ const options = reactive<EChartsOption>({
     ],
 });
 
-proAqiStore.$subscribe((_, state) => {
-    provinceAqi.value = state.proAqiInfo.data;
-});
+// onMounted(() => {
+//     initMap();
+// });
 
-onMounted(() => {
-    initMap();
-});
-
-const initMap = async (): Promise<void> => {
-    await proAqiStore.fetchProvinceAqi();
-    fetch('/src/echarts/map/China.json')
-        .then((response: Response) => response.json())
-        .then((data: any) => {
-            echarts.registerMap(CHINA, data);
-            chinaMap.value = echarts.init(document.getElementById('map')!);
-            // mock fetch province data
-            data.features.forEach((province: any) => {
-                const proName: ProvinceName = province.properties.name;
-                if (proName) {
-                    (options.series as any)[0].data.push({
-                        name: proName,
-                        value: provinceAqi.value![proName].aqi,
-                        itemStyle: {
-                            areaColor: generateColor(
-                                provinceAqi.value![proName].aqi
-                            ),
-                            opacity: 0.9,
-                        },
-                        emphasis: {
-                            itemStyle: {
-                                areaColor: generateColor(
-                                    provinceAqi.value![proName].aqi
-                                ),
-                                opacity: 1,
-                            },
-                        },
-                    });
-                }
-            });
-            chinaMap.value!.setOption(options);
-            window.addEventListener('resize', function () {
-                chinaMap.value!.resize();
-            });
-        });
-};
+// const initMap = async (): Promise<void> => {
+//     // await proAqiStore.fetchProvinceAqi();
+//     fetch('/src/echarts/map/China.json')
+//         .then((response: Response) => response.json())
+//         .then((data: any) => {
+//             echarts.registerMap(CHINA, data);
+//             chinaMap.value = echarts.init(document.getElementById('map')!);
+//             // mock fetch province data
+//             data.features.forEach((province: any) => {
+//                 const proName: ProvinceName = province.properties.name;
+//                 if (proName) {
+//                     (options.series as any)[0].data.push({
+//                         name: proName,
+//                         value: provinceAqi.value![proName].aqi,
+//                         itemStyle: {
+//                             areaColor: generateColor(
+//                                 provinceAqi.value![proName].aqi
+//                             ),
+//                             opacity: 0.9,
+//                         },
+//                         emphasis: {
+//                             itemStyle: {
+//                                 areaColor: generateColor(
+//                                     provinceAqi.value![proName].aqi
+//                                 ),
+//                                 opacity: 1,
+//                             },
+//                         },
+//                     });
+//                 }
+//             });
+//             chinaMap.value!.setOption(options);
+//             window.addEventListener('resize', function () {
+//                 chinaMap.value!.resize();
+//             });
+//         });
+// };
 </script>
 
 <template>
